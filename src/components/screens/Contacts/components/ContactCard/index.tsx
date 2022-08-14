@@ -12,6 +12,12 @@ const ContactCard: FC<{ contact: IContact }> = ({ contact }) => {
   const [deleteContactOpen, setDeleteContactOpen] = useState<boolean>(false);
   const [deleteContactErrorMessage, setDeleteContactErrorMessage] = useState<string>('');
 
+  const updateRef = useRef(null);
+  const deleteRef = useRef(null);
+
+  useOutside(updateRef, () => updateContactOpen && setUpdateContactOpen(false));
+  useOutside(deleteRef, () => deleteContactOpen && setDeleteContactOpen(false));
+
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const [deleteContact, _] = useDeleteContactByIdMutation();
 
@@ -57,19 +63,23 @@ const ContactCard: FC<{ contact: IContact }> = ({ contact }) => {
           </p>
         </div>
       </div>
-      <UpdateContactPopup
-        contact={contact}
-        heading={`Update Contact ${contact.id}`}
-        value={updateContactOpen}
-        setValue={setUpdateContactOpen}
-      />
-      <DeleteContactPopup
-        handler={handleDeleteContact}
-        heading={`Are you sure you want to delete the ${contact.id} contact?`}
-        value={deleteContactOpen}
-        setValue={setDeleteContactOpen}
-        errorMessage={deleteContactErrorMessage}
-      />
+      <div ref={updateRef}>
+        <UpdateContactPopup
+          contact={contact}
+          heading={`Update Contact ${contact.id}`}
+          value={updateContactOpen}
+          setValue={setUpdateContactOpen}
+        />
+      </div>
+      <div ref={deleteRef}>
+        <DeleteContactPopup
+          handler={handleDeleteContact}
+          heading={`Are you sure you want to delete the ${contact.id} contact?`}
+          value={deleteContactOpen}
+          setValue={setDeleteContactOpen}
+          errorMessage={deleteContactErrorMessage}
+        />
+      </div>
     </div>
   );
 };
